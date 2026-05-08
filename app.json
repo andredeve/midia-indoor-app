@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Mídia Indoor Player",
+    "slug": "midia-indoor-player",
+    "version": "1.0.0",
+    "orientation": "landscape",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "midia-indoor",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0a0f"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a0a0f"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.midiaindoor.player"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
