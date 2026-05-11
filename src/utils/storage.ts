@@ -25,10 +25,12 @@ export async function getLocalManifest(terminalId: string): Promise<LocalManifes
 }
 
 export async function setLocalManifest(terminalId: string, manifest: LocalManifest): Promise<void> {
+  if (!terminalId || !manifest) return;
   await AsyncStorage.setItem(KEYS.MANIFEST(terminalId), JSON.stringify(manifest));
 }
 
 export async function deleteLocalManifest(terminalId: string): Promise<void> {
+  if (!terminalId) return;
   await AsyncStorage.removeItem(KEYS.MANIFEST(terminalId));
 }
 
@@ -39,6 +41,10 @@ export async function getSelectedTerminalId(): Promise<string | null> {
 }
 
 export async function setSelectedTerminalId(terminalId: string): Promise<void> {
+  if (!terminalId) {
+    await AsyncStorage.removeItem(KEYS.SELECTED_TERMINAL);
+    return;
+  }
   await AsyncStorage.setItem(KEYS.SELECTED_TERMINAL, terminalId);
 }
 
@@ -49,16 +55,22 @@ export async function getDeviceId(): Promise<string | null> {
 }
 
 export async function setDeviceId(id: string): Promise<void> {
+  if (!id) return;
   await AsyncStorage.setItem(KEYS.DEVICE_ID, id);
 }
 
 // ---- Último Sync ----
 
 export async function getLastSyncTimestamp(): Promise<number> {
-  const data = await AsyncStorage.getItem(KEYS.LAST_SYNC);
-  return data ? parseInt(data, 10) : 0;
+  try {
+    const data = await AsyncStorage.getItem(KEYS.LAST_SYNC);
+    return data ? parseInt(data, 10) : 0;
+  } catch {
+    return 0;
+  }
 }
 
 export async function setLastSyncTimestamp(timestamp: number): Promise<void> {
-  await AsyncStorage.setItem(KEYS.LAST_SYNC, timestamp.toString());
+  const val = (timestamp || 0).toString();
+  await AsyncStorage.setItem(KEYS.LAST_SYNC, val);
 }

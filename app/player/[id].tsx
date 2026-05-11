@@ -1,59 +1,52 @@
-// =============================================
-// Player Screen — Reprodução de mídia por terminal
-// =============================================
 import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import VideoPlayer from '../../src/components/VideoPlayer';
-import DownloadProgress from '../../src/components/DownloadProgress';
+import { View, StyleSheet, StatusBar } from 'react-native';
+import { useLocalSearchParams, Stack } from 'expo-router';
+import { useTerminalStore } from '../../src/stores/terminalStore';
 import { useSync } from '../../src/hooks/useSync';
-import { usePlayerStore } from '../../src/stores/playerStore';
-import { startHeartbeat, stopHeartbeat } from '../../src/services/heartbeat';
-import { getReadyItems } from '../../src/services/mediaCache';
+import { useHeartbeat } from '../../src/hooks/useHeartbeat';
+import VideoPlayer from '../../src/components/VideoPlayer';
+import SyncStatusBarComponent from '../../src/components/SyncStatusBar';
+import DownloadProgress from '../../src/components/DownloadProgress';
+
+console.log('[PlayerScreen] Componentes carregados:', { SyncStatusBarComponent, VideoPlayer });
 
 export default function PlayerScreen() {
-  const { id: terminalId } = useLocalSearchParams<{ id: string }>();
-  const { isSyncing, syncMessage, syncProgress } = useSync(terminalId ?? null);
-  const { playlist, setPlaylist } = usePlayerStore();
+  const { id } = useLocalSearchParams();
+  const terminalId = typeof id === 'string' ? id : null;
+  const { selectTerminal } = useTerminalStore();
+  
+  const { isSyncing, syncMessage, syncProgress } = useSync(terminalId);
+  
+  // Ativar Heartbeat (log de atividade)
+  useHeartbeat(terminalId);
 
   useEffect(() => {
-    if (!terminalId) return;
-
-    // Função assíncrona para carregar cache inicial
-    const loadInitialCache = async () => {
-      const cachedItems = await getReadyItems(terminalId);
-      if (cachedItems.length > 0) {
-        setPlaylist(cachedItems);
-      }
-    };
-
-    loadInitialCache();
-
-    // Iniciar heartbeat
-    startHeartbeat(terminalId);
-
-    return () => {
-      stopHeartbeat();
-    };
-  }, [terminalId]);
-
-  const hasContent = playlist.length > 0;
-  const isInitialSync = isSyncing && !hasContent;
+    if (terminalId) {
+      selectTerminal(terminalId);
+    }
+  }, [terminalId, selectTerminal]);
 
   return (
     <View style={styles.container}>
-      {/* Player de vídeo */}
-      {hasContent && <VideoPlayer />}
+      <Stack.Screen options={{ headerShown: false }} />
+      <StatusBar hidden />
+      
+      {/* Player Principal */}
+      <VideoPlayer />
 
-      {/* Overlay de download durante sync inicial */}
-      <DownloadProgress
-        message={syncMessage}
-        progress={syncProgress}
-        isVisible={isInitialSync}
-      />
-
-      {/* Tela preta quando sem conteúdo e não sincronizando */}
-      {!hasContent && !isSyncing && <View style={styles.blackScreen} />}
+      {/* Overlay de Sincronização */}
+      <SyncStatusBarComponent isSyncing={isSyncing} message={syncMessage} />
+      
+      {/* Barra de Download (aparece quando está baixando mídias) */}
+      {isSyncing && syncProgress > 0 && syncProgress < 100 && (
+        <View style={styles.downloadOverlay}>
+          <DownloadProgress 
+            progress={syncProgress} 
+            message={syncMessage} 
+            isVisible={true}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -61,10 +54,13 @@ export default function PlayerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#000',
   },
-  blackScreen: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
+  downloadOverlay: {
+    position: 'absolute',
+    bottom: 40,
+    left: 20,
+    right: 20,
+    zIndex: 100,
+  }
 });

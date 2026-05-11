@@ -37,6 +37,19 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   lastSyncAt: null,
 
   setPlaylist: (items: LocalMediaItem[]) => {
+    const { playlist, currentIndex } = get();
+    
+    // Verificar se a playlist mudou de verdade antes de resetar o index
+    const idsString = items.map(i => i.id).join(',');
+    const currentIdsString = playlist.map(i => i.id).join(',');
+    
+    if (idsString === currentIdsString) {
+      // Mesma playlist, apenas atualiza os dados dos itens (ex: progress)
+      set({ playlist: items });
+      return;
+    }
+
+    // Playlist nova ou mudou a ordem, reseta para o início
     set({
       playlist: items,
       currentIndex: 0,
@@ -49,10 +62,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const { playlist, currentIndex } = get();
     if (playlist.length === 0) return;
 
-    const nextIndex = (currentIndex + 1) % playlist.length; // Loop infinito
+    const nextIndex = (currentIndex + 1) % playlist.length;
     set({
       currentIndex: nextIndex,
       currentItem: playlist[nextIndex],
+      isPlaying: true,
     });
   },
 
@@ -64,6 +78,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({
       currentIndex: prevIndex,
       currentItem: playlist[prevIndex],
+      isPlaying: true,
     });
   },
 
@@ -73,6 +88,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       set({
         currentIndex: index,
         currentItem: playlist[index],
+        isPlaying: true,
       });
     }
   },

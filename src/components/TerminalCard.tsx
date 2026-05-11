@@ -40,7 +40,7 @@ export default function TerminalCard({ terminal, onPress }: TerminalCardProps) {
     >
       {/* Ícone do terminal */}
       <View style={styles.iconContainer}>
-        <Ionicons name="tv-outline" size={32} color="#a78bfa" />
+        <Ionicons name="tv-outline" size={32} color="#d4ff00" />
       </View>
 
       {/* Informações */}
@@ -82,18 +82,18 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e1b2e',
+    backgroundColor: '#111111',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#2d2a3e',
+    borderColor: '#222222',
   },
   iconContainer: {
     width: 56,
     height: 56,
     borderRadius: 14,
-    backgroundColor: '#2d2a3e',
+    backgroundColor: '#0a0a0a',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,

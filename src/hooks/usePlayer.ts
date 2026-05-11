@@ -30,31 +30,39 @@ export function usePlayer(): UsePlayerReturn {
   } = usePlayerStore();
 
   const imageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isProcessingEnd = useRef(false);
 
   const isVideo = currentItem?.fileType?.startsWith('video/') ?? false;
   const isImage = currentItem?.fileType?.startsWith('image/') ?? false;
 
-  // Duração da imagem: usa override > durationSeconds > padrão
   const imageDuration =
     currentItem?.durationOverride ??
     currentItem?.durationSeconds ??
     DEFAULT_IMAGE_DURATION;
 
   const onVideoEnd = useCallback(() => {
-    console.log(`[Player] Vídeo finalizado. Index: ${currentIndex}`);
+    if (isProcessingEnd.current) return;
+    isProcessingEnd.current = true;
+    
+    console.log(`[Player] >>> Vídeo finalizado. Pulando do index ${currentIndex} para o próximo...`);
     playNext();
+    
+    // Pequeno delay para evitar múltiplas chamadas no mesmo evento de fim
+    setTimeout(() => {
+      isProcessingEnd.current = false;
+    }, 500);
   }, [currentIndex, playNext]);
 
   const onImageTimerEnd = useCallback(() => {
-    console.log(`[Player] Timer de imagem expirou. Index: ${currentIndex}`);
+    console.log(`[Player] >>> Timer de imagem (${imageDuration}s) expirou. Pulando index ${currentIndex}`);
     playNext();
-  }, [currentIndex, playNext]);
+  }, [currentIndex, playNext, imageDuration]);
 
   const onError = useCallback(
     (error: string) => {
-      console.error(`[Player] Erro no item ${currentIndex}:`, error);
-      // Em caso de erro, pula para o próximo item
-      playNext();
+      console.error(`[Player] !!! Erro no item ${currentIndex}:`, error);
+      // Em caso de erro, tenta pular para o próximo para não travar a playlist
+      setTimeout(playNext, 1000);
     },
     [currentIndex, playNext]
   );

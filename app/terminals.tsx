@@ -17,8 +17,10 @@ import { useAuthStore } from '../src/stores/authStore';
 import { useTerminalStore } from '../src/stores/terminalStore';
 import { useNetworkStatus } from '../src/hooks/useNetworkStatus';
 import TerminalCard from '../src/components/TerminalCard';
-import SyncStatusBar from '../src/components/SyncStatusBar';
+import SyncStatusBarComponent from '../src/components/SyncStatusBar';
 import type { Terminal } from '../src/types';
+
+console.log('[TerminalsScreen] Componentes carregados:', { SyncStatusBarComponent, TerminalCard });
 
 export default function TerminalsScreen() {
   const router = useRouter();
@@ -64,7 +66,7 @@ export default function TerminalsScreen() {
           style={styles.retryButton}
           onPress={fetchTerminals}
         >
-          <Ionicons name="refresh" size={18} color="#a78bfa" />
+          <Ionicons name="refresh" size={18} color="#d4ff00" />
           <Text style={styles.retryText}>Tentar novamente</Text>
         </TouchableOpacity>
       </View>
@@ -103,11 +105,9 @@ export default function TerminalsScreen() {
       </View>
 
       {/* Status de sync */}
-      <SyncStatusBar
+      <SyncStatusBarComponent
         isSyncing={false}
         message=""
-        progress={0}
-        isConnected={isConnected}
       />
 
       {/* Erro */}
@@ -134,8 +134,8 @@ export default function TerminalsScreen() {
           <RefreshControl
             refreshing={isLoading}
             onRefresh={fetchTerminals}
-            tintColor="#a78bfa"
-            colors={['#a78bfa']}
+            tintColor="#d4ff00"
+            colors={['#d4ff00']}
           />
         }
         ListEmptyComponent={renderEmptyState}
@@ -144,7 +144,7 @@ export default function TerminalsScreen() {
       {/* Loading overlay */}
       {isLoading && terminals.length === 0 && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#a78bfa" />
+          <ActivityIndicator size="large" color="#d4ff00" />
           <Text style={styles.loadingText}>Carregando terminais...</Text>
         </View>
       )}
@@ -155,7 +155,7 @@ export default function TerminalsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0f',
+    backgroundColor: '#000000',
   },
   // Header
   header: {
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1e1b2e',
+    borderBottomColor: '#111111',
   },
   headerLeft: {
     flexDirection: 'row',
@@ -177,14 +177,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#7c3aed',
+    backgroundColor: '#d4ff00',
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#000000',
   },
   headerTitle: {
     fontSize: 22,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: '#1e1b2e',
+    backgroundColor: '#111111',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -265,10 +265,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#2d2a3e',
+    borderColor: '#222222',
   },
   retryText: {
-    color: '#a78bfa',
+    color: '#d4ff00',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0a0a0f',
+    backgroundColor: '#000000',
   },
   loadingText: {
     color: '#94a3b8',

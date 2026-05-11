@@ -24,7 +24,7 @@ export default function DownloadProgress({
         {/* Ícone animado */}
         <View style={styles.iconCircle}>
           {progress < 100 ? (
-            <ActivityIndicator size="large" color="#a78bfa" />
+            <ActivityIndicator size="large" color="#d4ff00" />
           ) : (
             <Ionicons name="checkmark-circle" size={48} color="#22c55e" />
           )}
@@ -63,20 +63,20 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   card: {
-    backgroundColor: '#1e1b2e',
+    backgroundColor: '#111111',
     borderRadius: 24,
     padding: 32,
     alignItems: 'center',
     width: '80%',
     maxWidth: 400,
     borderWidth: 1,
-    borderColor: '#2d2a3e',
+    borderColor: '#222222',
   },
   iconCircle: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#2d2a3e',
+    backgroundColor: '#0a0a0a',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
@@ -98,19 +98,19 @@ const styles = StyleSheet.create({
   progressBarBg: {
     flex: 1,
     height: 8,
-    backgroundColor: '#2d2a3e',
+    backgroundColor: '#222222',
     borderRadius: 4,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#a78bfa',
+    backgroundColor: '#d4ff00',
     borderRadius: 4,
   },
   progressText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#c4b5fd',
+    color: '#d4ff00',
     minWidth: 40,
     textAlign: 'right',
   },
