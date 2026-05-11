@@ -4,10 +4,13 @@
 import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, LogBox } from 'react-native';
 import { useAuthStore } from '../src/stores/authStore';
 import { useConfigStore } from '../src/stores/configStore';
 import { getSupabase } from '../src/services/supabase';
+
+// Ignorar erros internos de token expirado do Supabase no ambiente visual
+LogBox.ignoreLogs(['AuthApiError: Invalid Refresh Token', 'Refresh Token Not Found']);
 
 export default function RootLayout() {
   const { loadConfig, isLoading: isConfigLoading, supabaseUrl, supabaseAnonKey } = useConfigStore();

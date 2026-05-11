@@ -28,7 +28,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   initialize: async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.log('[Auth] Sessão expirada ou inválida, forçando logout silencioso.');
+        await supabase.auth.signOut().catch(() => {});
+        set({ isLoading: false, isAuthenticated: false, user: null, session: null });
+        return;
+      }
 
       if (session) {
         // Buscar perfil do usuário
